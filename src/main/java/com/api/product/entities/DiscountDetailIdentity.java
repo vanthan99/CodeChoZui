@@ -1,0 +1,13 @@
+package com.api.product.entities;
+
+import lombok.Data;
+
+import javax.persistence.Embeddable;
+import java.io.Serializable;
+
+@Embeddable
+@Data
+public class DiscountDetailIdentity implements Serializable {
+    private Long discountId;
+    private Long productId;
+}

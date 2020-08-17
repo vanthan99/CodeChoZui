@@ -1,55 +1,63 @@
 package com.api.product.controllers;
 
-import com.api.product.dto.CategoryDTO;
-import com.api.product.entities.Category;
-import com.api.product.mapper.impl.CategoryMapper;
-import com.api.product.services.CategoryService;
-import io.swagger.annotations.Api;
+import com.api.product.services.dto.CategoryDTO;
+import com.api.product.services.handle.CategoryService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/category")
+@RequiredArgsConstructor
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private CategoryMapper mapper;
+    private final CategoryService categoryService;
 
+    /*
+    * Tìm Category theo ID
+    * */
+    @ApiOperation(
+            value = "Tìm kiếm Category theo Id",
+            httpMethod = "GET"
+    )
+    @GetMapping(value = "/{id}")
+    public CategoryDTO findCategoryById(@PathVariable("id") Long id){
+        return categoryService.findById(id);
+    }
+
+    /*
+    * Trả về danh sách Category
+    * */
+    @ApiOperation(
+            value = "Tìm kiếm tất cả Category",
+            httpMethod = "GET"
+    )
     @GetMapping
-    @ApiOperation(
-            value = "Trả về danh sách loại hàng"
-    )
-    public List<CategoryDTO> listCategory(){
-        return mapper.toCategoryDtoList(categoryService.findAll());
+    public List<CategoryDTO> findAllCategory(){
+        return categoryService.findAll();
     }
 
+    // thêm mới Category
+    @ApiOperation(
+            value = "Thêm mới Category",
+            httpMethod = "POST"
+    )
     @PostMapping
-    @ApiOperation(
-            value = "Thêm mới danh mục"
-    )
-    public CategoryDTO save(@RequestBody CategoryDTO dto){
-        Category category = mapper.toCategory(dto);
-        return mapper.toCategoryDto(categoryService.save(category));
+    public CategoryDTO saveCategory(@RequestBody CategoryDTO categoryDTO){
+        return categoryService.save(categoryDTO);
     }
 
-    @GetMapping("/{id}")
+    // Chỉnh sửa Category
     @ApiOperation(
-            value = "Tìm kiếm danh mục dựa vào ID"
-    )
-    public CategoryDTO findById(@PathVariable(name = "id") Long id){
-        Category category = categoryService.findById(id);
-        return mapper.toCategoryDto(category);
-    }
-    @ApiOperation(
-            value = "Chỉnh sửa loại hàng"
+            value = "Chỉnh sửa Category",
+            httpMethod = "PUT"
     )
     @PutMapping("/{id}")
-    public CategoryDTO update(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO dto){
-        Category category = mapper.toCategory(dto);
-        category.setId(id);
-        return mapper.toCategoryDto(categoryService.save(category));
+    public CategoryDTO updateCategory(
+            @PathVariable("id") Long id,
+            @RequestBody CategoryDTO categoryDTO
+    ){
+        return categoryService.update(id,categoryDTO);
     }
 }

@@ -1,82 +1,89 @@
 package com.api.product.controllers;
 
-import com.api.product.dto.ProductDTO;
-import com.api.product.entities.Product;
-import com.api.product.mapper.impl.ProductMapper;
-import com.api.product.services.CategoryService;
-import com.api.product.services.ProductService;
+import com.api.product.services.dto.ProductDTO;
+import com.api.product.services.handle.ProductService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/product")
+@RequiredArgsConstructor
 public class ProductController {
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private ProductMapper productMapper;
-    @Autowired
-    private CategoryService categoryService;
+    private final ProductService productService;
 
-    /*
-    * lay danh sach san pham.
-    * neu trong url co truyen vao tham so la catId thi
-    * tra ve danh sach cua san pham dua vao ma category
-    *
-    * */
+    /*Tìm kiếm tất cả Product*/
     @GetMapping
-    @ApiOperation(value = "Trả về danh sách sản phẩm")
-    public List<ProductDTO> listProduct(
-            @ApiParam(value = "Id của category cần lấy danh sách sản phẩm")
-            @RequestParam(value = "catId",required = false) Long catId){
-        if (catId == null)
-            return productMapper.toProductDtoList(productService.findAll());
-        return productMapper.toProductDtoList(categoryService.findById(catId).getProducts());
+    @ApiOperation(value = "Danh sách tất cả Product")
+    public List<ProductDTO> findAllProduct(
+            @ApiParam(value = "Id của Category")
+            @RequestParam(value = "catId",required = false) Long catId,
+
+            @ApiParam(value = "Id của Supplier")
+            @RequestParam(value = "supId",required = false) Long supId
+    ){
+        // Trường hợp tìm kiếm theo category
+        if (!(catId == null)){
+            return productService.findAllProductByCategory(catId);
+        }
+
+        // Trường hợp tìm kiếm theo supplier
+        else if (!(supId == null)){
+            return productService.findAllProductBySupplier(supId);
+        }
+
+        // Trường hợp còn lại. Tìm kiếm tất cả products
+        else return productService.findAllProduct();
     }
 
-    /*
-    * tra ve product dto
-    * */
-
-    @GetMapping(value = "/{id}")
-    @ApiOperation(
-            value = "Tìm kiếm sản phẩm dựa vào ID"
-    )
-    public ProductDTO findById(@PathVariable(name = "id") Long id){
-        Product product = productService.findById(id);
-        return productMapper.toProductDto(product);
+    /*Tìm kiếm tất cả Product đang hoạt động*/
+    @GetMapping(value = "active")
+    @ApiOperation(value = "Tìm kiếm tất cả product đang hoạt động")
+    public List<ProductDTO> findAllProductIsActive(){
+        return productService.findAllProductIsActive();
     }
-    /*
-    * input: ProductDTO
-    * chuc nang:  luu san pham
-    * output: ProductDTO
-    * */
 
+    /*Tìm kiếm tất cả Product ngừng hoạt động*/
+    @GetMapping(value = "notActive")
+    @ApiOperation(value = "Tìm kiếm tất cả product không hoạt động")
+    public List<ProductDTO> findAllProductIsNotActive(){
+        return productService.findAllProductIsNotActive();
+    }
+
+    /*Tìm kiếm Product dựa vào Id*/
+    @ApiOperation(value = "Tìm kiếm Product theo Id")
+    @GetMapping("/{id}")
+    public ProductDTO findProductById(@ApiParam(value = "Id của Product cần tìm") @PathVariable("id") Long id){
+        return productService.findProductById(id);
+    }
+
+    /*Thêm mới Product*/
+    @ApiOperation(value = "Thêm mới Product")
     @PostMapping
-    @ApiOperation(
-            value = "Thêm mới sản phẩm"
-    )
-    public ProductDTO save(@RequestBody ProductDTO dto){
-        Product product = productMapper.toProduct(dto);
-        return productMapper.toProductDto(productService.save(product));
+    public ProductDTO saveProduct(@RequestBody ProductDTO productDTO){
+        return productService.saveProduct(productDTO);
     }
 
-    /*
-     * input: ProductDTO, id on URL
-     * chuc nang:  chinh sua san pham
-     * output: ProductDTO
-     * */
-    @PutMapping(value = "/{id}")
-    @ApiOperation(
-            value = "Chỉnh sửa sản phẩm"
-    )
-    public ProductDTO update(@PathVariable(name = "id") Long id,
-                             @RequestBody ProductDTO dto){
-        Product product = productMapper.toProduct(dto);
-        product.setId(id);
-        return productMapper.toProductDto(productService.save(product));
+    /*Chỉnh sửa Product*/
+    @ApiOperation(value = "Chỉnh sửa product")
+    @PutMapping("/{id}")
+    public ProductDTO updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody ProductDTO productDTO
+    ){
+        return productService.updateProduct(id,productDTO);
+    }
+
+    /*Thay đổi trạng thái của sản phẩm
+    * Trường hợp trạng thái đang hoạt động sẽ được thay đổi thành ngừng kinh doanh
+    * Ngược lại, Trường hợp sản phẩm bị ngừng kinh doanh thì sẽ được đổi thành hoạt động trở lại
+    * */
+    @ApiOperation(value = "Thay đổi trạng thái của sản phẩm")
+    @PutMapping(value = "/enable/{id}")
+    public ProductDTO changeStatusProduct(@PathVariable("id") Long id){
+        return productService.changeProductStatus(id);
     }
 }

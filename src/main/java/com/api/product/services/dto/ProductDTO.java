@@ -1,15 +1,15 @@
-package com.api.product.dto;
+package com.api.product.services.dto;
 
 import lombok.Data;
-
 import java.math.BigDecimal;
 
 @Data
 public class ProductDTO {
     private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private Integer quantity;
     private Long catId;
+    private Long supId;
+    private String description;
+    private String name;
+    private Long price;
+    private Integer quantity;
 }
