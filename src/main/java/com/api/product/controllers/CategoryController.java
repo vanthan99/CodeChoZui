@@ -1,7 +1,7 @@
 package com.api.product.controllers;
 
-import com.api.product.services.dto.CategoryDTO;
-import com.api.product.services.handle.CategoryService;
+import com.api.product.dto.CategoryDTO;
+import com.api.product.services.CategoryService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

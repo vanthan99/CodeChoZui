@@ -1,7 +1,7 @@
 package com.api.product.controllers;
 
-import com.api.product.services.dto.DiscountDTO;
-import com.api.product.services.handle.DiscountService;
+import com.api.product.dto.DiscountDTO;
+import com.api.product.services.DiscountService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;

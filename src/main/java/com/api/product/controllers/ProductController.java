@@ -1,12 +1,11 @@
 package com.api.product.controllers;
 
-import com.api.product.services.dto.ProductDTO;
-import com.api.product.services.handle.ProductService;
+import com.api.product.dto.ProductDTO;
+import com.api.product.services.ProductService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
