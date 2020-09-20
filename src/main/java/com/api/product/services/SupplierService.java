@@ -1,20 +1,20 @@
 package com.api.product.services;
 
-import com.api.product.dto.SupplierDTO;
+import com.api.product.entities.Supplier;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface SupplierService {
-//    find supplier by id
-    SupplierDTO findSupplierById(Long id);
+    //    find supplier by id
+    Supplier findSupplierById(Long id);
 
-//    find all supplier
-    List<SupplierDTO> findAllSupplier();
+    //    save Supplier
+    Supplier save(Supplier supplier);
 
-//    save Supplier
-    SupplierDTO save(SupplierDTO supplierDTO);
+    //    update Supplier
+    Supplier update(Long id, Supplier supplier);
 
-//    update Supplier
-    SupplierDTO update(Long id, SupplierDTO supplierDTO);
+    Page<Supplier> findAllSupplierPagination(int page, int limit);
 }
 

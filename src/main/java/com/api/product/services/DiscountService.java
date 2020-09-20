@@ -1,18 +1,20 @@
 package com.api.product.services;
 
 import com.api.product.dto.DiscountDTO;
+import com.api.product.entities.Discount;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface DiscountService {
 
     /*Find all discount*/
-    List<DiscountDTO> findAllDiscount();
+    Page<Discount> findAllDiscount(int limit, int page);
 
     /*Find Discount by id*/
-    DiscountDTO findDiscountById(Long id);
+    Discount findDiscountById(Long id);
 
     /*Add new discount*/
-    DiscountDTO save(DiscountDTO discountDTO);
+    Discount save(Discount discount);
 
 }

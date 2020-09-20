@@ -1,43 +1,55 @@
 package com.api.product.controllers;
 
-import com.api.product.dto.SupplierDTO;
+import com.api.product.entities.Supplier;
 import com.api.product.services.SupplierService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/supplier")
-@RequiredArgsConstructor
 public class SupplierController {
-    private final SupplierService supplierService;
+    private SupplierService service;
 
-    /*
-    * find  All Supplier
-    * */
-    @GetMapping
-    @ApiOperation(value = "Tìm tất cả Supplier")
-    public List<SupplierDTO> findAllSupplier(){
-        return supplierService.findAllSupplier();
+    @Autowired
+    public void setSupplierService(SupplierService supplierService) {
+        this.service = supplierService;
     }
 
-    // Find Category By Id
+    /*
+     * find  All Supplier
+     * */
+    @GetMapping
+    @ApiOperation(value = "Tìm tất cả Supplier")
+    public ResponseEntity<Page<Supplier>> findAllSupplier(
+            @RequestParam(value = "limit") Integer limit,
+            @RequestParam(value = "page") Integer page
+    ) {
+        if (limit != null && page != null)
+            return new ResponseEntity<>(service.findAllSupplierPagination(page, limit), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Find Supplier By Id
     @GetMapping(value = "/{id}")
     @ApiOperation(value = "Tìm kiếm Supplier dựa vào Id")
-    public SupplierDTO findSupplierById(
-            @ApiParam(value = "id cần tìm kiếm supplier") @PathVariable("id") Long id
-    ){
-        return supplierService.findSupplierById(id);
+    public Supplier findSupplierById(
+            @PathVariable(value = "id") Long id
+    ) {
+        return service.findSupplierById(id);
     }
 
     // Create Supplier
     @ApiOperation(value = "Thêm mơi Supplier")
     @PostMapping
-    public SupplierDTO save(@RequestBody SupplierDTO supplierDTO) {
-        return supplierService.save(supplierDTO);
+    public ResponseEntity<Supplier> save(@RequestBody Supplier supplier) {
+        System.out.println("supplier:" + supplier);
+        if (supplier != null)
+            return new ResponseEntity<>(service.save(supplier), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /*
@@ -48,7 +60,7 @@ public class SupplierController {
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Chỉnh sửa Supplier")
-    public SupplierDTO update(@RequestBody SupplierDTO supplierDTO,@PathVariable("id") Long id){
-        return supplierService.update(id,supplierDTO);
+    public ResponseEntity<Supplier> update(@RequestBody Supplier supplier, @PathVariable("id") Long id) {
+        return new ResponseEntity<>(service.update(id, supplier), HttpStatus.OK);
     }
 }

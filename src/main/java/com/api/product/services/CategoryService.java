@@ -1,18 +1,21 @@
 package com.api.product.services;
 
 import com.api.product.dto.CategoryDTO;
+import com.api.product.entities.Category;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface CategoryService {
     // find category by id
-    CategoryDTO findById(Long id);
+    Category findById(Long id);
 
     // Find all category
-    List<CategoryDTO> findAll();
+    Page<Category> findAll(int limit, int page);
 
     // save category
-    CategoryDTO save(CategoryDTO categoryDTO);
+    Category save(Category category);
 
     // update Category
-    CategoryDTO update(Long id, CategoryDTO categoryDTO);
+    Category update(Long id, Category category);
 }

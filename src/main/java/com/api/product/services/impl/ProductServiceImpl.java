@@ -2,25 +2,79 @@ package com.api.product.services.impl;
 
 import com.api.product.entities.Product;
 import com.api.product.repositories.ProductRepository;
-import com.api.product.dto.ProductDTO;
 import com.api.product.services.ProductService;
-import com.api.product.mapper.ProductMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ProductServiceImpl implements ProductService {
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
-    private ProductMapper productMapper;
+    public void setProductRepository(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-//    private final CategoryRepository categoryRepository;
-//    private final SupplierRepository supplierRepository;
+    @Override
+    public Product findProductById(Long id) {
+        return productRepository.getOne(id);
+    }
+
+    @Override
+    public Page<Product> findAllProduct(int page, int limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product updateProduct(Long id, Product product) {
+        product.setId(id);
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Page<Product> findAllProductIsEnable(int limit, int page) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return productRepository.findAllProductIsEnable(pageable);
+    }
+
+    @Override
+    public Page<Product> findAllProductIsNotEnable(int limit, int page) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return productRepository.findAllProductIsNotEnable(pageable);
+    }
+
+
+    @Override
+    public Page<Product> findAllProductByCategory(Long catId, int limit, int page) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return productRepository.findAllProductByCategory(catId, pageable);
+    }
+
+    @Override
+    public Page<Product> findAllProductBySupplier(Long supId, int limit, int page) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return productRepository.findAllProductBySupplier(supId, pageable);
+    }
+
+    @Override
+    public Product changeProductStatus(Long id) {
+        return null;
+    }
+
+
+//    @Autowired
+//    private CategoryRepository categoryRepository;
+//    @Autowired
+//    private SupplierRepository supplierRepository;
 //    @PostConstruct
 //    public void initData(){
 //        for (int i = 1 ; i <= 30 ; i++){
@@ -36,59 +90,4 @@ public class ProductServiceImpl implements ProductService {
 //        }
 //    }
 
-    @Override
-    public ProductDTO findProductById(Long id) {
-        Product product = productRepository.getOne(id);
-        return productMapper.toDTO(product);
-    }
-
-    @Override
-    public List<ProductDTO> findAllProduct() {
-        return productMapper.toDTOList(productRepository.findAll());
-    }
-
-    @Override
-    public ProductDTO saveProduct(ProductDTO productDTO) {
-        Product product = productMapper.toEntity(productDTO);
-        productRepository.save(product);
-        return productMapper.toDTO(product);
-    }
-
-    @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product product = productMapper.toEntity(productDTO);
-        product.setId(id);
-        productRepository.save(product);
-        return productMapper.toDTO(product);
-    }
-
-    @Override
-    public List<ProductDTO> findAllProductIsActive() {
-        return productMapper.toDTOList(productRepository.findAllProductIsActive());
-    }
-
-    @Override
-    public List<ProductDTO> findAllProductIsNotActive() {
-        return productMapper.toDTOList(productRepository.findAllProductIsNotActive());
-    }
-
-    @Override
-    public List<ProductDTO> findAllProductByCategory(Long catId) {
-        List<Product> products = productRepository.findAllProductByCategory(catId);
-        return productMapper.toDTOList(products);
-    }
-
-    @Override
-    public List<ProductDTO> findAllProductBySupplier(Long supId) {
-        List<Product> products = productRepository.findAllProductBySupplier(supId);
-        return productMapper.toDTOList(products);
-    }
-
-    @Override
-    public ProductDTO changeProductStatus(Long id) {
-        Product product = productRepository.getOne(id);
-        product.setEnable(!product.getEnable());
-        productRepository.save(product);
-        return productMapper.toDTO(product);
-    }
 }

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "bill_status")
 @Data
 public class BillStatus {
     @Id

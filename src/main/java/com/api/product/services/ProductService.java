@@ -1,38 +1,53 @@
 package com.api.product.services;
 
-import com.api.product.dto.ProductDTO;
-
-import java.util.List;
+import com.api.product.entities.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface ProductService {
 
     /*
         Find Product By id
     */
-    ProductDTO findProductById(Long id);
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    Product findProductById(Long id);
 
     /*
-    * Find List product*/
-    List<ProductDTO> findAllProduct();
+     * Find List product*/
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    Page<Product> findAllProduct(int page, int limit);
 
     // Create Product
-    ProductDTO saveProduct(ProductDTO productDTO);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Product saveProduct(Product product);
 
     // update product
-    ProductDTO updateProduct(Long id, ProductDTO productDTO);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Product updateProduct(Long id, Product product);
 
     // find products is active
-    List<ProductDTO> findAllProductIsActive();
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Page<Product> findAllProductIsEnable(int limit, int page);
 
     // find Products is not active
-    List<ProductDTO> findAllProductIsNotActive();
+    Page<Product> findAllProductIsNotEnable(int limit, int page);
 
     // find Products by category
-    List<ProductDTO> findAllProductByCategory(Long catId);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Page<Product> findAllProductByCategory(Long catId, int limit, int page);
 
     // find products by supplier
-    List<ProductDTO> findAllProductBySupplier(Long supId);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Page<Product> findAllProductBySupplier(Long supId, int limit, int page);
 
     // Change Status Product
-    ProductDTO changeProductStatus(Long id);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    Product changeProductStatus(Long id);
+
+    // ListProduct pagination
+
+
+    // ListProduct by Supplier has pagination
+
+
 }

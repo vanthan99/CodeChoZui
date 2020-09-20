@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "bill_detail")
 @Data
 public class BillDetail {
     @EmbeddedId
@@ -16,6 +17,9 @@ public class BillDetail {
 
     @Column
     private Long price;
+
+    @Column
+    private Float discountRate;
 
     // Mapping to Bill table
     @ManyToOne(fetch = FetchType.EAGER)

@@ -1,5 +1,6 @@
 package com.api.product.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +12,9 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "product")
 @Data
+@JsonIgnoreProperties({"billDetails", "discountDetails", "createdAt", "updatedAt"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +46,7 @@ public class Product {
     private Category category;
 
     // mapping to billDetail table
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "product")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     List<BillDetail> billDetails;
 
     // mapping to supplier table
@@ -52,6 +55,6 @@ public class Product {
     private Supplier supplier;
 
     // mapping to discount detail
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "product")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<DiscountDetail> discountDetails;
 }

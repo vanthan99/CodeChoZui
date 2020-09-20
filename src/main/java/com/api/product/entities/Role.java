@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "role")
 @Data
 public class Role {
     @Id
@@ -16,6 +17,6 @@ public class Role {
     private String name;
 
     // Mapping to User table
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "roles")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "role")
     private List<User> users;
 }

@@ -1,15 +1,16 @@
 package com.api.product.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "user")
 @Data
 public class User {
     @Id
@@ -41,21 +42,14 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedAt;
-
+    
     // Mapping to Bill table
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     private List<Bill> bills;
 
     // Mapping to Role table
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = {
-                    @JoinColumn(name = "user_id",nullable = false,updatable = false)
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "role_id",nullable = false,updatable = false)
-            }
-    )
-    private List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "roleId",nullable = false)
+    private Role role;
+
 }
